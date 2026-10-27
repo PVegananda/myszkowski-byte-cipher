@@ -7,59 +7,80 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header>
-    <h1>Myszkowski Byte Cipher</h1>
-    <p>A byte-oriented Myszkowski transposition experiment with a rolling key</p>
+  <header class="hero">
+    <div class="language-switcher">
+      <label for="languageSelect" class="sr-only">Language</label>
+      <select id="languageSelect" aria-label="Language">
+        <option value="en">English</option>
+        <option value="id">Bahasa Indonesia</option>
+      </select>
+    </div>
+    <div class="hero-inner">
+      <div class="eyebrow" data-i18n="eyebrow">RESEARCH PROTOTYPE</div>
+      <h1>Myszkowski <span>Byte Cipher</span></h1>
+      <p data-i18n="heroDescription">A byte-oriented transposition experiment with a rolling key</p>
+    </div>
   </header>
   <main>
     <section class="card">
-      <h2>1. Parameters</h2>
-      <label>Key <input id="key" value="LAPTOP" autocomplete="off"></label>
-      <label>Rows per block <input id="rows" type="number" min="1" max="65535" value="2"></label>
-      <label>Key schedule
+      <div class="section-heading"><span class="step">01</span><div><h2 data-i18n="parametersTitle">Parameters</h2><p data-i18n="parametersDescription">Configure the key schedule and reversible byte transform.</p></div></div>
+      <label data-i18n="keyLabel">Key <input id="key" value="LAPTOP" autocomplete="off"></label>
+      <label data-i18n="rowsLabel">Rows per block <input id="rows" type="number" min="1" max="65535" value="2"></label>
+      <label data-i18n="scheduleLabel">Key schedule
         <select id="mode">
-          <option value="rolling">Rolling key</option>
-          <option value="static">Static key</option>
+          <option value="rolling" data-i18n="rollingKey">Rolling key</option>
+          <option value="static" data-i18n="staticKey">Static key</option>
         </select>
       </label>
-      <label>Low-hex-nibble offset
+      <label data-i18n="nibbleLabel">Low-hex-nibble offset
         <select id="hexOffset">
-          <option value="0">Disabled (classical bytes)</option>
-          <option value="9">Add 9 modulo 16</option>
-          <option value="7">Add binary 0111 (7) modulo 16</option>
+          <option value="0" data-i18n="nibbleOff">Disabled (classical bytes)</option>
+          <option value="9" data-i18n="nibbleNine">Add 9 modulo 16</option>
+          <option value="7" data-i18n="nibbleSeven">Add binary 0111 (7) modulo 16</option>
         </select>
       </label>
       <p id="info" class="hint"></p>
     </section>
 
     <section class="card">
-      <h2>2. Text encryption and decryption</h2>
-      <label>Plaintext <textarea id="plain">SAYAKULIAHDIBUDIDARMA</textarea></label>
-      <button id="encText">Encrypt</button><button id="decText">Decrypt</button>
-      <label>Ciphertext (hex) <textarea id="cipher"></textarea></label>
-      <p class="hint">Non-printable bytes are shown as hexadecimal values. The first three blocks are displayed:</p>
+      <div class="section-heading"><span class="step">02</span><div><h2 data-i18n="textTitle">Text encryption</h2><p data-i18n="textDescription">Encrypt a message locally in your browser.</p></div></div>
+      <label data-i18n="plainLabel">Plaintext <textarea id="plain">SAYAKULIAHDIBUDIDARMA</textarea></label>
+      <button id="encText" data-i18n="encrypt">Encrypt</button><button id="decText" data-i18n="decrypt">Decrypt</button>
+      <label data-i18n="cipherLabel">Ciphertext (hex) <textarea id="cipher"></textarea></label>
+      <p class="hint" data-i18n="traceHint">Non-printable bytes are shown as hexadecimal values. The first three blocks are displayed:</p>
       <div id="trace"></div>
     </section>
 
     <section class="card">
-      <h2>3. File encryption and decryption</h2>
-      <input type="file" id="fileIn">
-      <button id="encFile">Encrypt and download (.mysz)</button><button id="decFile">Decrypt and download</button>
+      <div class="section-heading"><span class="step">03</span><div><h2 data-i18n="fileTitle">File encryption</h2><p data-i18n="fileDescription">Process files without uploading them to a server.</p></div></div>
+      <div class="file-picker">
+        <input type="file" id="fileIn">
+        <label for="fileIn" class="file-picker-label">
+          <span class="file-icon" aria-hidden="true">↑</span>
+          <span class="file-picker-copy">
+            <strong data-i18n="chooseFile">Choose a file</strong>
+            <small data-i18n="fileHint">PDF, Office files, images, or any binary file</small>
+          </span>
+          <span class="file-picker-action">Browse</span>
+        </label>
+        <p id="fileName" class="file-name" aria-live="polite" data-i18n="noFile">No file selected</p>
+      </div>
+      <button id="encFile" data-i18n="encryptDownload">Encrypt and download (.mysz)</button><button id="decFile" data-i18n="decryptDownload">Decrypt and download</button>
       <pre id="fileResult"></pre>
     </section>
 
     <section class="card">
-      <h2>4. Research measurements</h2>
-      <button id="runBench">Run timing benchmark</button><button id="copyCsv">Copy CSV</button>
+      <div class="section-heading"><span class="step">04</span><div><h2 data-i18n="researchTitle">Research measurements</h2><p data-i18n="researchDescription">Collect repeatable timing and pattern observations.</p></div></div>
+      <button id="runBench" data-i18n="runBenchmark">Run timing benchmark</button><button id="copyCsv" data-i18n="copyCsv">Copy CSV</button>
       <table class="res">
         <thead><tr><th>Size</th><th>Encryption (ms)</th><th>Decryption (ms)</th></tr></thead>
         <tbody id="benchBody"></tbody>
       </table>
-      <button id="runPattern">Run repeated-block test</button>
+      <button id="runPattern" data-i18n="runPattern">Run repeated-block test</button>
       <pre id="patternResult"></pre>
     </section>
   </main>
-  <div id="status" class="ok">Ready.</div>
+  <div id="status" class="toast" role="status" aria-live="polite" aria-hidden="true"></div>
   <footer><a href="https://github.com/PVegananda/myszkowski-byte-cipher">Open-source repository</a> | Research prototype</footer>
 
   <script src="js/utils.js"></script>
