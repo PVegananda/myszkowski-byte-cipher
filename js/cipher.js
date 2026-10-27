@@ -36,12 +36,21 @@
     return perm;
   }
 
-  function validate(key, rows) {
+  function validate(key, rows, dataLength = 0) {
+    if (typeof key !== "string") throw new Error("Key must be text.");
     const chars = [...key];
     if (chars.length < 2 || new Set(chars).size < 2)
-      throw new Error("Kunci minimal 2 karakter dengan sedikitnya 2 karakter berbeda.");
+      throw new Error("Key must contain at least 2 different characters.");
     if (!Number.isInteger(rows) || rows < 1 || rows > 65535)
-      throw new Error("Jumlah baris harus bilangan bulat 1 - 65535.");
+      throw new Error("Rows must be an integer from 1 to 65535.");
+    if (chars.length * rows > 16 * 1024 * 1024)
+      throw new Error("The block size is limited to 16 MiB.");
+    if (!Number.isSafeInteger(dataLength) || dataLength < 0 || dataLength > 0xffffffff)
+      throw new Error("Data is too large for this file format.");
+  }
+
+  function validateHexOffset(hexOffset) {
+    if (![0, 7, 9].includes(hexOffset)) throw new Error("Hex offset must be 0, 7, or 9.");
   }
 
   function permProvider(key, rows, rolling) {
@@ -66,25 +75,39 @@
     return out;
   }
 
+  function shiftLowNibble(data, offset) {
+    if (!offset) return data.slice();
+    const out = new Uint8Array(data.length);
+    for (let i = 0; i < data.length; i++) out[i] = (data[i] & 0xf0) | ((data[i] + offset) & 0x0f);
+    return out;
+  }
+
   function pad(data, bs) {
     const padded = new Uint8Array(Math.ceil(data.length / bs) * bs); // sisa blok = byte 0
     padded.set(data);
     return padded;
   }
 
-  function encrypt(data, { key, rows = 2, rolling = true }) {
-    validate(key, rows);
+  function encrypt(data, { key, rows = 2, rolling = true, hexOffset = 0 }) {
+    if (!(data instanceof Uint8Array)) throw new Error("Input must be a Uint8Array.");
+    validate(key, rows, data.length);
+    validateHexOffset(hexOffset);
     const bs = [...key].length * rows;
-    const payload = transform(pad(data, bs), key, rows, rolling, false);
-    return F.pack({ rows, rolling, length: data.length, crc: U.crc32(data) }, payload);
+    const transposed = transform(pad(data, bs), key, rows, rolling, false);
+    const payload = shiftLowNibble(transposed, hexOffset);
+    return F.pack({ rows, rolling, hexOffset, length: data.length, crc: U.crc32(data) }, payload);
   }
 
   function decrypt(bytes, { key }) {
+    if (!(bytes instanceof Uint8Array)) throw new Error("Encrypted data must be a Uint8Array.");
     const h = F.unpack(bytes);
-    validate(key, h.rows);
+    validate(key, h.rows, h.length);
+    const hexOffset = h.version === 1 ? 0 : h.hexOffset;
     const bs = [...key].length * h.rows;
-    if (h.payload.length % bs !== 0) throw new Error("Panjang kunci tidak cocok dengan file ini.");
-    const plain = transform(h.payload, key, h.rows, h.rolling, true);
+    if (h.payload.length % bs !== 0 || h.payload.length !== Math.ceil(h.length / bs) * bs)
+      throw new Error("File length does not match its header.");
+    const unshifted = shiftLowNibble(h.payload, (16 - hexOffset) % 16);
+    const plain = transform(unshifted, key, h.rows, h.rolling, true);
     if (h.length > plain.length) throw new Error("File rusak.");
     const result = plain.slice(0, h.length);
     if (U.crc32(result) !== h.crc) throw new Error("Kunci salah atau file rusak (CRC32 tidak cocok).");

@@ -25,14 +25,31 @@ test("round-trip berbagai ukuran & mode", () => {
         assert.deepStrictEqual(C.decrypt(C.encrypt(d, { key, rows, rolling }), { key }), d);
       }
 });
+test("low hex nibble offsets are reversible", () => {
+  const d = U.randomBytes(257);
+  for (const hexOffset of [0, 7, 9]) {
+    const e = C.encrypt(d, { key: "LAPTOP", rows: 3, rolling: true, hexOffset });
+    assert.strictEqual(F.unpack(e).hexOffset, hexOffset);
+    assert.deepStrictEqual(C.decrypt(e, { key: "LAPTOP" }), d);
+  }
+});
 test("kunci salah terdeteksi", () => {
   const e = C.encrypt(bytes("rahasia sekali"), { key: "LAPTOP", rows: 2 });
   assert.throws(() => C.decrypt(e, { key: "TOPLAP" }), /CRC32|salah/);
 });
 test("file bukan hasil enkripsi ditolak", () => assert.throws(() => C.decrypt(bytes("halo dunia, bukan mysz"), { key: "LAPTOP" }), /header/));
+test("invalid types and legacy flags are rejected", () => {
+  assert.throws(() => C.encrypt("text", { key: "AB", rows: 2 }), /Uint8Array/);
+  assert.throws(() => C.decrypt(new Uint8Array(16), { key: "AB" }), /header/);
+});
 test("kunci tidak valid ditolak", () => {
   assert.throws(() => C.encrypt(bytes("a"), { key: "A", rows: 2 }));
   assert.throws(() => C.encrypt(bytes("a"), { key: "AAAA", rows: 2 }));
+  assert.throws(() => C.encrypt(bytes("a"), { key: "AB", rows: 2, hexOffset: 8 }), /offset/);
+});
+test("hex input rejects ambiguous characters", () => {
+  assert.throws(() => U.fromHex("aa-ff"), /non-hexadecimal/);
+  assert.throws(() => U.fromHex("abc"), /genap/);
 });
 test("uji pola: kunci berputar > kunci tetap", () => {
   const r = MYSZ.Analysis.patternTest({ key: "LAPTOP", rows: 2 }, 60);

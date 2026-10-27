@@ -1,33 +1,89 @@
-# Myszkowski Rolling-Key Cipher
+# Myszkowski Byte Cipher
 
-Pengembangan *Myszkowski Transposition Cipher* (dasar: JIKTEKS Vol. 3 No. 3, 2025).
-Pengembangan: **kunci digeser 1 karakter untuk setiap blok** (LAPTOP, APTOPL, PTOPLA, ...),
-dan data diproses sebagai **byte** sehingga file .docx/.pdf tidak rusak.
+[![Tests](https://img.shields.io/badge/tests-Node.js%2018%2B-339933?logo=node.js&logoColor=white)](./tests/test.js)
+[![License](https://img.shields.io/badge/license-MIT-blue?logo=github)](./LICENSE)
+[![Open source](https://img.shields.io/badge/open--source-contributions-welcome-0fa3b1?logo=github)](https://github.com/PVegananda/myszkowski-byte-cipher)
 
-## Cara menjalankan
-- Buka `index.html` di browser (klik dua kali), atau
-- Deploy folder ini ke Cloudflare Pages / GitHub Pages (tanpa build).
-- Uji otomatis: `node tests/test.js` (butuh Node.js 18+).
+A browser-based research prototype that applies a rolling-key Myszkowski
+transposition to bytes. It can process arbitrary byte data, including PDF and
+Office files, without assuming that the input is text.
 
-## Struktur
-| File | Fungsi |
+> **Important:** This is an educational transposition cipher, not a replacement
+> for AES-GCM, ChaCha20-Poly1305, or another authenticated encryption scheme.
+> Do not use it to protect confidential data.
+
+## Features
+
+- Myszkowski column ordering with repeated-key characters handled correctly.
+- Optional rolling key: the key rotates once for each block.
+- Optional low-hex-nibble transform:
+  - add `9` modulo 16; or
+  - add binary `0111` (decimal 7) modulo 16.
+- A versioned 16-byte header records the mode, row count, original length, and
+  CRC32. Header and payload lengths are checked before allocation and decoding.
+- Runs locally in a browser with no server-side upload.
+- Built-in timing and repeated-block measurements for reproducible paper data.
+
+The nibble transform changes the low four bits of each byte after transposition.
+It is reversible obfuscation, not cryptographic confusion: the selected offset
+is stored in the header and does not add key material.
+
+## Run locally
+
+Open `index.html` directly, or serve this directory with any static web server:
+
+```bash
+python3 -m http.server 8000
+```
+
+Then open <http://localhost:8000>. The project is also suitable for GitHub Pages
+or Cloudflare Pages.
+
+Run the automated tests with Node.js 18 or newer:
+
+```bash
+node tests/test.js
+```
+
+## Algorithm outline
+
+1. The key is ranked alphabetically; equal characters receive the same rank.
+2. Input is split into `key length × rows` byte blocks and zero-padded only in
+   the final block.
+3. Unique-ranked columns are read top-to-bottom, while equal-ranked columns
+   are read row-by-row, as in Myszkowski transposition.
+4. With rolling mode, the key rotates left by the block index modulo the key
+   length.
+5. The optional low-nibble offset is applied modulo 16.
+6. Decryption reverses these steps and verifies the original length and CRC32.
+
+## Research limitations
+
+- Transposition preserves byte frequencies and is vulnerable to structural and
+  known-plaintext analysis.
+- A rolling schedule repeats after the key length in blocks.
+- CRC32 detects accidental corruption but is not authentication and is
+  vulnerable to intentional modification.
+- The header is not encrypted or authenticated.
+- The browser implementation is intentionally bounded to a 16 MiB block and a
+  32-bit original length for predictable memory use.
+
+These limitations should be stated explicitly in any paper. Security claims
+should be limited to reversible transformation, integrity-error detection, and
+the measured experimental behavior.
+
+## Project layout
+
+| Path | Purpose |
 |---|---|
-| `index.html` | Halaman utama |
-| `css/style.css` | Tampilan (mendukung mode gelap) |
-| `js/utils.js` | CRC32, hex, SHA-256, unduh file |
-| `js/format.js` | Header file hasil enkripsi (16 byte) |
-| `js/cipher.js` | **Inti algoritma**: urutan kunci, geser kunci, enkripsi, dekripsi |
-| `js/analysis.js` | Benchmark waktu & uji pola blok berulang |
-| `js/app.js` | Logika antarmuka |
-| `tests/test.js` | 9 pengujian otomatis |
+| `index.html` | Static user interface |
+| `css/style.css` | Responsive light/dark styling |
+| `js/cipher.js` | Key schedule, transposition, nibble transform |
+| `js/format.js` | Versioned `.mysz` header |
+| `js/utils.js` | CRC32, hex parsing, SHA-256, downloads |
+| `js/analysis.js` | Timing and repeated-block measurements |
+| `js/app.js` | Browser event handlers |
+| `tests/test.js` | Regression and validation tests |
 
-## Cara kerja singkat
-1. Urutan kolom = peringkat abjad tiap huruf kunci; huruf kembar bernomor sama (LAPTOP = 2 1 4 5 3 4).
-2. Data dipotong per blok (ukuran = panjang kunci x jumlah baris), blok terakhir diisi byte 0.
-3. Blok ke-n memakai kunci yang digeser (n-1) huruf. Kolom bernomor unik dibaca ke bawah, kolom bernomor sama dibaca per baris.
-4. Header menyimpan jumlah baris, panjang data asli, dan CRC32, sehingga dekripsi memotong pengisi dengan tepat dan mendeteksi kunci salah.
-
-## Batasan (tulis di bagian pembahasan paper)
-- Ini cipher klasik: hanya mengubah **posisi** byte, bukan nilainya. Tidak setara AES.
-- Kunci berulang setiap `panjang kunci` blok, sehingga pola berkurang tetapi tidak hilang.
-- CRC32 hanya pendeteksi kesalahan, bukan tanda tangan digital.
+Contributions and extensions are welcome in the
+[public repository](https://github.com/PVegananda/myszkowski-byte-cipher).
