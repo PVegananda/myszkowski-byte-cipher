@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Myszkowski Rolling-Key Cipher</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Myszkowski Rolling-Key Cipher</h1>
+    <p>Pengembangan Myszkowski Transposition Cipher dengan kunci berputar per blok</p>
+  </header>
+  <main>
+    <section class="card">
+      <h2>1. Parameter</h2>
+      <label>Kunci <input id="key" value="LAPTOP"></label>
+      <label>Jumlah baris per blok <input id="rows" type="number" min="1" max="65535" value="2"></label>
+      <label>Mode
+        <select id="mode">
+          <option value="rolling">Kunci Berputar (pengembangan)</option>
+          <option value="static">Kunci Tetap (algoritma asli)</option>
+        </select>
+      </label>
+      <p id="info" class="hint"></p>
+    </section>
+
+    <section class="card">
+      <h2>2. Enkripsi / Dekripsi Teks</h2>
+      <label>Plaintext <textarea id="plain">SAYAKULIAHDIBUDIDARMA</textarea></label>
+      <button id="encText">Enkripsi</button><button id="decText">Dekripsi</button>
+      <label>Ciphertext (hex) <textarea id="cipher"></textarea></label>
+      <p class="hint">Simbol ∅ = byte pengisi (0), · = karakter tak tampak. Tiga blok pertama ditampilkan:</p>
+      <div id="trace"></div>
+    </section>
+
+    <section class="card">
+      <h2>3. Enkripsi / Dekripsi File (.docx, .pdf, dll.)</h2>
+      <input type="file" id="fileIn">
+      <button id="encFile">Enkripsi &amp; Unduh (.mysz)</button><button id="decFile">Dekripsi &amp; Unduh</button>
+      <pre id="fileResult"></pre>
+    </section>
+
+    <section class="card">
+      <h2>4. Pengujian untuk Paper</h2>
+      <button id="runBench">Jalankan Benchmark Waktu</button><button id="copyCsv">Salin CSV</button>
+      <table class="res">
+        <thead><tr><th>Ukuran</th><th>Enkripsi (ms)</th><th>Dekripsi (ms)</th></tr></thead>
+        <tbody id="benchBody"></tbody>
+      </table>
+      <button id="runPattern">Uji Pola Blok Berulang</button>
+      <pre id="patternResult"></pre>
+    </section>
+  </main>
+  <div id="status" class="ok">Siap.</div>
+  <footer>Tugas Kriptografi | Dasar: JIKTEKS Vol. 3 No. 3 (2025)</footer>
+
+  <script src="js/utils.js"></script>
+  <script src="js/format.js"></script>
+  <script src="js/cipher.js"></script>
+  <script src="js/analysis.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
