@@ -41,6 +41,11 @@ It can process arbitrary byte data, including PDF and Office files, without
 assuming that the input is text. Everything runs locally in the browser; files
 are not uploaded to an application server.
 
+The classical transposition basis is referenced from **JIKTEKS: Jurnal Ilmu
+Komputer dan Teknologi Informasi**, Vol. 03, No. 03, August 2025, pp. 25–29,
+ISSN 2986-5417. See the [DOI](https://doi.org/10.70404/jikteks.v3i03.322) and
+[journal website](https://jurnal.faatuatua.com/index.php/JIKTEK).
+
 ## Features
 
 - Myszkowski column ordering with repeated-key characters handled correctly.
@@ -125,6 +130,12 @@ The documentation identifies **PVegananda** as the author and covers the
 algorithm, `.mysz` file format, security limitations, threat model,
 experimental methodology, reproducibility checklist, and suggested paper
 structure.
+
+## Reference
+
+> JIKTEKS: Jurnal Ilmu Komputer dan Teknologi Informasi. Vol. 03, No. 03,
+> Agustus 2025, hlm. 25–29. ISSN 2986-5417.
+> [doi.org/10.70404/jikteks.v3i03.322](https://doi.org/10.70404/jikteks.v3i03.322)
 
 ## License
 

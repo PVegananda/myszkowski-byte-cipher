@@ -9,6 +9,23 @@
 
 ---
 
+## Reference publication
+
+The classical Myszkowski transposition basis for this project is the following
+publication:
+
+> **JIKTEKS: Jurnal Ilmu Komputer dan Teknologi Informasi.** Vol. 03,
+> No. 03, August 2025, pp. 25–29. ISSN 2986-5417.
+> DOI: [10.70404/jikteks.v3i03.322](https://doi.org/10.70404/jikteks.v3i03.322).
+> Journal website: [jurnal.faatuatua.com/index.php/JIKTEK](https://jurnal.faatuatua.com/index.php/JIKTEK).
+
+In this project, the publication is treated as the reference for the
+Myszkowski transposition foundation. The rolling-key schedule, byte-oriented
+processing, low-hex-nibble options, versioned `.mysz` container, browser
+interface, and validation strategy are project extensions and should not be
+attributed to the reference publication unless separately supported by that
+publication.
+
 ## Abstract
 
 Myszkowski Byte Cipher is a browser-based implementation of a byte-oriented
@@ -382,3 +399,13 @@ the public repository:
 Contributors should preserve the security disclaimer, update regression tests,
 and document behavioral changes that affect the file format or paper results.
 
+## 16. Citation
+
+For academic writing, cite the reference publication using the following
+metadata:
+
+```text
+JIKTEKS: Jurnal Ilmu Komputer dan Teknologi Informasi. Vol. 03, No. 03,
+Agustus 2025, hlm. 25–29. ISSN 2986-5417.
+https://doi.org/10.70404/jikteks.v3i03.322
+```
