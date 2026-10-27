@@ -1,16 +1,45 @@
-# Myszkowski Byte Cipher
+<div align="center">
+  <img src="./assets/myszkowski-byte-cipher.svg" width="112" alt="Myszkowski Byte Cipher logo">
 
-[![Tests](https://img.shields.io/badge/tests-Node.js%2018%2B-339933?logo=node.js&logoColor=white)](./tests/test.js)
-[![License](https://img.shields.io/badge/license-MIT-blue?logo=github)](./LICENSE)
-[![Open source](https://img.shields.io/badge/open--source-contributions-welcome-0fa3b1?logo=github)](https://github.com/PVegananda/myszkowski-byte-cipher)
+  <h1>Myszkowski Byte Cipher</h1>
 
-A browser-based research prototype that applies a rolling-key Myszkowski
-transposition to bytes. It can process arbitrary byte data, including PDF and
-Office files, without assuming that the input is text.
+  <p>
+    A browser-based research prototype for byte-oriented Myszkowski transposition.
+    <br>
+    Local processing, rolling keys, and reversible low-nibble experiments.
+  </p>
+
+  <p>
+    <a href="https://github.com/PVegananda/myszkowski-byte-cipher">
+      <img src="https://img.shields.io/badge/repository-public-315BEA?style=for-the-badge&logo=github&logoColor=white" alt="Public repository">
+    </a>
+    <a href="./tests/test.js">
+      <img src="https://img.shields.io/badge/tests-12%20passing-16834B?style=for-the-badge&logo=node.js&logoColor=white" alt="12 tests passing">
+    </a>
+    <a href="./LICENSE">
+      <img src="https://img.shields.io/badge/license-MIT-6B4EFF?style=for-the-badge" alt="MIT license">
+    </a>
+  </p>
+
+  <p>
+    <a href="https://github.com/PVegananda/myszkowski-byte-cipher/issues">Issues</a>
+    ·
+    <a href="https://github.com/PVegananda/myszkowski-byte-cipher">Contribute</a>
+    ·
+    <a href="./docs/TECHNICAL-DOCUMENTATION.md">Technical documentation</a>
+  </p>
+</div>
 
 > **Important:** This is an educational transposition cipher, not a replacement
 > for AES-GCM, ChaCha20-Poly1305, or another authenticated encryption scheme.
 > Do not use it to protect confidential data.
+
+## Overview
+
+Myszkowski Byte Cipher applies a rolling-key Myszkowski transposition to bytes.
+It can process arbitrary byte data, including PDF and Office files, without
+assuming that the input is text. Everything runs locally in the browser; files
+are not uploaded to an application server.
 
 ## Features
 
@@ -20,9 +49,10 @@ Office files, without assuming that the input is text.
   - add `9` modulo 16; or
   - add binary `0111` (decimal 7) modulo 16.
 - A versioned 16-byte header records the mode, row count, original length, and
-  CRC32. Header and payload lengths are checked before allocation and decoding.
-- Runs locally in a browser with no server-side upload.
+  CRC32. Header and payload lengths are checked before transformation.
+- Browser-based file workflow for arbitrary binary files.
 - Built-in timing and repeated-block measurements for reproducible paper data.
+- English and Bahasa Indonesia interface with automatic language fallback.
 
 The nibble transform changes the low four bits of each byte after transposition.
 It is reversible obfuscation, not cryptographic confusion: the selected offset
@@ -36,8 +66,8 @@ Open `index.html` directly, or serve this directory with any static web server:
 python3 -m http.server 8000
 ```
 
-Then open <http://localhost:8000>. The project is also suitable for GitHub Pages
-or Cloudflare Pages.
+Then open <http://localhost:8000>. The project is suitable for GitHub Pages or
+Cloudflare Pages.
 
 Run the automated tests with Node.js 18 or newer:
 
@@ -68,9 +98,8 @@ node tests/test.js
 - The browser implementation is intentionally bounded to a 16 MiB block and a
   32-bit original length for predictable memory use.
 
-These limitations should be stated explicitly in any paper. Security claims
-should be limited to reversible transformation, integrity-error detection, and
-the measured experimental behavior.
+Security claims should be limited to reversible transformation, integrity-error
+detection, and measured experimental behavior.
 
 ## Project layout
 
@@ -82,8 +111,22 @@ the measured experimental behavior.
 | `js/format.js` | Versioned `.mysz` header |
 | `js/utils.js` | CRC32, hex parsing, SHA-256, downloads |
 | `js/analysis.js` | Timing and repeated-block measurements |
-| `js/app.js` | Browser event handlers |
+| `js/app.js` | Browser event handlers and localization |
 | `tests/test.js` | Regression and validation tests |
 
-Contributions and extensions are welcome in the
-[public repository](https://github.com/PVegananda/myszkowski-byte-cipher).
+## Documentation
+
+The complete technical documentation is available in two formats:
+
+- [Technical documentation (Markdown)](./docs/TECHNICAL-DOCUMENTATION.md)
+- [Technical documentation (DOCX)](./docs/Myszkowski-Byte-Cipher-Technical-Documentation.docx)
+
+The documentation identifies **PVegananda** as the author and covers the
+algorithm, `.mysz` file format, security limitations, threat model,
+experimental methodology, reproducibility checklist, and suggested paper
+structure.
+
+## License
+
+Released under the [MIT License](./LICENSE). Contributions and extensions are
+welcome in the [public repository](https://github.com/PVegananda/myszkowski-byte-cipher).
