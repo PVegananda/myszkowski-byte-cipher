@@ -110,13 +110,17 @@ detection, and measured experimental behavior.
 
 | Path | Purpose |
 |---|---|
-| `index.html` | Static user interface |
-| `css/style.css` | Responsive light/dark styling |
+| `index.html` | Application (text, file, research tools) |
+| `paper.html` | Research article and documentation page |
+| `css/style.css` | Application styling (light/dark) |
+| `css/paper.css` | Article styling |
 | `js/cipher.js` | Key schedule, transposition, nibble transform |
 | `js/format.js` | Versioned `.mysz` header |
 | `js/utils.js` | CRC32, hex parsing, SHA-256, downloads |
 | `js/analysis.js` | Timing and repeated-block measurements |
 | `js/app.js` | Browser event handlers and localization |
+| `js/ui.js` | Tabs, key visualisation, drag and drop |
+| `js/paper.js` | Article navigation and language switch |
 | `tests/test.js` | Regression and validation tests |
 
 ## Documentation

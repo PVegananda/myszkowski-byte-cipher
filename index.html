@@ -3,90 +3,202 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Myszkowski Byte Cipher</title>
+  <title>Myszkowski Byte Cipher — Browser Transposition Cipher App</title>
+  <meta name="description" content="Encrypt text and files with byte-oriented Myszkowski transposition, rolling keys and a reversible nibble transform. Runs entirely in your browser; nothing is uploaded.">
+  <meta name="theme-color" content="#0f172a">
+  <link rel="canonical" href="https://myszkowski-byte-cipher.pages.dev/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Myszkowski Byte Cipher">
+  <meta property="og:description" content="Byte-oriented Myszkowski transposition with a rolling key. 100% local processing.">
+  <meta property="og:url" content="https://myszkowski-byte-cipher.pages.dev/">
+  <link rel="icon" href="assets/myszkowski-byte-cipher.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header class="hero">
-    <div class="language-switcher">
-      <label for="languageSelect" class="sr-only">Language</label>
-      <select id="languageSelect" aria-label="Language">
-        <option value="en">English</option>
-        <option value="id">Bahasa Indonesia</option>
-      </select>
-    </div>
-    <div class="hero-inner">
-      <div class="eyebrow" data-i18n="eyebrow">RESEARCH PROTOTYPE</div>
-      <h1>Myszkowski <span>Byte Cipher</span></h1>
-      <p data-i18n="heroDescription">A byte-oriented transposition experiment with a rolling key</p>
+  <a class="skip-link" href="#workbench">Skip to application</a>
+
+  <header class="appbar">
+    <div class="appbar-inner">
+      <a class="brand" href="./" aria-label="Myszkowski Byte Cipher">
+        <img src="assets/myszkowski-byte-cipher.svg" alt="" width="30" height="30">
+        <span class="brand-text"><strong>Myszkowski</strong> Byte Cipher</span>
+        <span class="badge">Prototype</span>
+      </a>
+      <nav class="appnav" aria-label="Primary">
+        <a href="paper.html" data-i18n="navDocs">Documentation</a>
+        <a href="https://github.com/PVegananda/myszkowski-byte-cipher" rel="noopener">GitHub</a>
+      </nav>
+      <div class="language-switcher">
+        <label for="languageSelect" class="sr-only">Language</label>
+        <select id="languageSelect" aria-label="Language">
+          <option value="en">English</option>
+          <option value="id">Bahasa Indonesia</option>
+        </select>
+      </div>
     </div>
   </header>
-  <main>
-    <section class="card">
-      <div class="section-heading"><span class="step">01</span><div><h2 data-i18n="parametersTitle">Parameters</h2><p data-i18n="parametersDescription">Configure the key schedule and reversible byte transform.</p></div></div>
-      <label data-i18n="keyLabel">Key <input id="key" value="LAPTOP" autocomplete="off"></label>
-      <label data-i18n="rowsLabel">Rows per block <input id="rows" type="number" min="1" max="65535" value="2"></label>
-      <label data-i18n="scheduleLabel">Key schedule
-        <select id="mode">
-          <option value="rolling" data-i18n="rollingKey">Rolling key</option>
-          <option value="static" data-i18n="staticKey">Static key</option>
-        </select>
-      </label>
-      <label data-i18n="nibbleLabel">Low-hex-nibble offset
-        <select id="hexOffset">
-          <option value="0" data-i18n="nibbleOff">Disabled (classical bytes)</option>
-          <option value="9" data-i18n="nibbleNine">Add 9 modulo 16</option>
-          <option value="7" data-i18n="nibbleSeven">Add binary 0111 (7) modulo 16</option>
-        </select>
-      </label>
-      <p id="info" class="hint"></p>
-    </section>
 
-    <section class="card">
-      <div class="section-heading"><span class="step">02</span><div><h2 data-i18n="textTitle">Text encryption</h2><p data-i18n="textDescription">Encrypt a message locally in your browser.</p></div></div>
-      <label data-i18n="plainLabel">Plaintext <textarea id="plain">SAYAKULIAHDIBUDIDARMA</textarea></label>
-      <button id="encText" data-i18n="encrypt">Encrypt</button><button id="decText" data-i18n="decrypt">Decrypt</button>
-      <label data-i18n="cipherLabel">Ciphertext (hex) <textarea id="cipher"></textarea></label>
-      <p class="hint" data-i18n="traceHint">Non-printable bytes are shown as hexadecimal values. The first three blocks are displayed:</p>
-      <div id="trace"></div>
-    </section>
+  <section class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow"><span class="dot"></span><span data-i18n="eyebrow">RESEARCH PROTOTYPE</span></p>
+      <h1>Myszkowski <span>Byte Cipher</span></h1>
+      <p class="lead" data-i18n="heroDescription">A byte-oriented transposition experiment with a rolling key</p>
+      <ul class="pills">
+        <li data-i18n="pillLocal">100% local</li>
+        <li data-i18n="pillAnyFile">Any file type</li>
+        <li data-i18n="pillRolling">Rolling key</li>
+        <li data-i18n="pillCrc">CRC32 verified</li>
+      </ul>
+    </div>
+  </section>
 
-    <section class="card">
-      <div class="section-heading"><span class="step">03</span><div><h2 data-i18n="fileTitle">File encryption</h2><p data-i18n="fileDescription">Process files without uploading them to a server.</p></div></div>
-      <div class="file-picker">
-        <input type="file" id="fileIn">
-        <label for="fileIn" class="file-picker-label">
-          <span class="file-icon" aria-hidden="true">↑</span>
-          <span class="file-picker-copy">
-            <strong data-i18n="chooseFile">Choose a file</strong>
-            <small data-i18n="fileHint">PDF, Office files, images, or any binary file</small>
-          </span>
-          <span class="file-picker-action">Browse</span>
+  <main id="workbench" class="workbench">
+    <div class="notice" role="note">
+      <span class="notice-icon" aria-hidden="true">!</span>
+      <p data-i18n="notice">Educational transposition cipher — not authenticated encryption. Do not use it to protect confidential data.</p>
+    </div>
+
+    <div class="workspace">
+      <!-- ============ CONFIGURATION ============ -->
+      <aside class="panel config" aria-labelledby="h-params">
+        <div class="panel-head">
+          <span class="panel-icon" aria-hidden="true">⚙</span>
+          <div>
+            <h2 id="h-params" data-i18n="parametersTitle">Parameters</h2>
+            <p data-i18n="parametersDescription">Configure the key schedule and reversible byte transform.</p>
+          </div>
+        </div>
+
+        <label data-i18n="keyLabel">Key <input id="key" value="LAPTOP" autocomplete="off" spellcheck="false"></label>
+        <div id="keyViz" class="keyviz" aria-live="polite" aria-label="Key ranking"></div>
+
+        <label data-i18n="rowsLabel">Rows per block <input id="rows" type="number" min="1" max="65535" value="2"></label>
+        <label data-i18n="scheduleLabel">Key schedule
+          <select id="mode">
+            <option value="rolling" data-i18n="rollingKey">Rolling key</option>
+            <option value="static" data-i18n="staticKey">Static key</option>
+          </select>
         </label>
-        <p id="fileName" class="file-name" aria-live="polite" data-i18n="noFile">No file selected</p>
-      </div>
-      <button id="encFile" data-i18n="encryptDownload">Encrypt and download (.mysz)</button><button id="decFile" data-i18n="decryptDownload">Decrypt and download</button>
-      <pre id="fileResult"></pre>
-    </section>
+        <label data-i18n="nibbleLabel">Low-hex-nibble offset
+          <select id="hexOffset">
+            <option value="0" data-i18n="nibbleOff">Disabled (classical bytes)</option>
+            <option value="9" data-i18n="nibbleNine">Add 9 modulo 16</option>
+            <option value="7" data-i18n="nibbleSeven">Add binary 0111 (7) modulo 16</option>
+          </select>
+        </label>
+        <p id="info" class="hint"></p>
+        <a class="doc-link" href="paper.html" data-i18n="readPaper">Read the paper and documentation →</a>
+      </aside>
 
-    <section class="card">
-      <div class="section-heading"><span class="step">04</span><div><h2 data-i18n="researchTitle">Research measurements</h2><p data-i18n="researchDescription">Collect repeatable timing and pattern observations.</p></div></div>
-      <button id="runBench" data-i18n="runBenchmark">Run timing benchmark</button><button id="copyCsv" data-i18n="copyCsv">Copy CSV</button>
-      <table class="res">
-        <thead><tr><th>Size</th><th>Encryption (ms)</th><th>Decryption (ms)</th></tr></thead>
-        <tbody id="benchBody"></tbody>
-      </table>
-      <button id="runPattern" data-i18n="runPattern">Run repeated-block test</button>
-      <pre id="patternResult"></pre>
-    </section>
+      <!-- ============ TOOLS ============ -->
+      <section class="tools" aria-label="Tools">
+        <div class="tabs" role="tablist" aria-label="Tools">
+          <button type="button" role="tab" id="tab-text" class="tab active" aria-selected="true" aria-controls="pane-text" data-pane="pane-text" data-i18n="tabText">Text</button>
+          <button type="button" role="tab" id="tab-file" class="tab" aria-selected="false" aria-controls="pane-file" data-pane="pane-file" tabindex="-1" data-i18n="tabFile">Files</button>
+          <button type="button" role="tab" id="tab-research" class="tab" aria-selected="false" aria-controls="pane-research" data-pane="pane-research" tabindex="-1" data-i18n="tabResearch">Research</button>
+        </div>
+
+        <!-- Text -->
+        <div class="panel pane" id="pane-text" role="tabpanel" aria-labelledby="tab-text">
+          <div class="panel-head">
+            <span class="panel-icon" aria-hidden="true">Aa</span>
+            <div>
+              <h2 data-i18n="textTitle">Text encryption</h2>
+              <p data-i18n="textDescription">Encrypt a message locally in your browser.</p>
+            </div>
+          </div>
+          <div class="io-grid">
+            <label data-i18n="plainLabel">Plaintext <textarea id="plain" spellcheck="false">SAYAKULIAHDIBUDIDARMA</textarea></label>
+            <div class="io-actions">
+              <button id="encText" class="primary" data-i18n="encrypt">Encrypt</button>
+              <button id="decText" class="secondary" data-i18n="decrypt">Decrypt</button>
+            </div>
+            <label data-i18n="cipherLabel">Ciphertext (hex) <textarea id="cipher" spellcheck="false"></textarea></label>
+          </div>
+          <div class="inline-actions">
+            <button type="button" id="copyCipher" class="ghost" data-i18n="copyCipher">Copy ciphertext</button>
+            <button type="button" id="clearText" class="ghost" data-i18n="clear">Clear</button>
+          </div>
+          <p class="hint" data-i18n="traceHint">Non-printable bytes are shown as hexadecimal values. The first three blocks are displayed:</p>
+          <div id="trace"></div>
+        </div>
+
+        <!-- Files -->
+        <div class="panel pane" id="pane-file" role="tabpanel" aria-labelledby="tab-file" hidden>
+          <div class="panel-head">
+            <span class="panel-icon" aria-hidden="true">⬆</span>
+            <div>
+              <h2 data-i18n="fileTitle">File encryption</h2>
+              <p data-i18n="fileDescription">Process files without uploading them to a server.</p>
+            </div>
+          </div>
+          <div class="file-picker" id="dropzone">
+            <input type="file" id="fileIn">
+            <label for="fileIn" class="file-picker-label">
+              <span class="file-icon" aria-hidden="true">↑</span>
+              <span class="file-picker-copy">
+                <strong data-i18n="chooseFile">Choose a file</strong>
+                <small data-i18n="fileHint">PDF, Office files, images, or any binary file</small>
+                <small class="drop-hint" data-i18n="dropHint">or drag and drop it here</small>
+              </span>
+              <span class="file-picker-action" data-i18n="browse">Browse</span>
+            </label>
+            <p id="fileName" class="file-name" aria-live="polite" data-i18n="noFile">No file selected</p>
+          </div>
+          <div class="inline-actions">
+            <button id="encFile" class="primary" data-i18n="encryptDownload">Encrypt and download (.mysz)</button>
+            <button id="decFile" class="secondary" data-i18n="decryptDownload">Decrypt and download</button>
+          </div>
+          <pre id="fileResult"></pre>
+        </div>
+
+        <!-- Research -->
+        <div class="panel pane" id="pane-research" role="tabpanel" aria-labelledby="tab-research" hidden>
+          <div class="panel-head">
+            <span class="panel-icon" aria-hidden="true">∿</span>
+            <div>
+              <h2 data-i18n="researchTitle">Research measurements</h2>
+              <p data-i18n="researchDescription">Collect repeatable timing and pattern observations.</p>
+            </div>
+          </div>
+          <div class="inline-actions">
+            <button id="runBench" class="primary" data-i18n="runBenchmark">Run timing benchmark</button>
+            <button id="copyCsv" class="secondary" data-i18n="copyCsv">Copy CSV</button>
+          </div>
+          <div class="table-wrap">
+            <table class="res">
+              <thead><tr><th>Size</th><th>Encryption (ms)</th><th>Decryption (ms)</th></tr></thead>
+              <tbody id="benchBody"></tbody>
+            </table>
+          </div>
+          <div class="divider"></div>
+          <div class="inline-actions">
+            <button id="runPattern" class="primary" data-i18n="runPattern">Run repeated-block test</button>
+          </div>
+          <pre id="patternResult"></pre>
+        </div>
+      </section>
+    </div>
   </main>
+
   <div id="status" class="toast" role="status" aria-live="polite" aria-hidden="true"></div>
-  <footer><a href="https://github.com/PVegananda/myszkowski-byte-cipher">Open-source repository</a> | Research prototype</footer>
+
+  <footer class="footer">
+    <span>© 2026 PVegananda · MIT License</span>
+    <span>
+      <a href="paper.html" data-i18n="navDocs">Documentation</a> ·
+      <a href="https://github.com/PVegananda/myszkowski-byte-cipher">Open-source repository</a>
+    </span>
+  </footer>
 
   <script src="js/utils.js"></script>
   <script src="js/format.js"></script>
   <script src="js/cipher.js"></script>
   <script src="js/analysis.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/ui.js"></script>
 </body>
 </html>

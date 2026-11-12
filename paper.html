@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Myszkowski Byte Cipher: A Byte-Oriented Transposition with Rolling Key | PVegananda</title>
+  <meta name="description" content="A research article and interactive laboratory on byte-oriented Myszkowski transposition with a rolling key schedule, a reversible low-nibble transform, and a versioned .mysz container. Runs entirely in the browser.">
+  <meta name="author" content="PVegananda">
+  <meta name="keywords" content="Myszkowski transposition, classical cipher, rolling key, byte cipher, cryptography education, browser implementation">
+  <meta name="theme-color" content="#14284b">
+  <link rel="canonical" href="https://myszkowski-byte-cipher.pages.dev/paper.html">
+
+  <!-- Scholarly metadata (Google Scholar / Highwire) -->
+  <meta name="citation_title" content="Myszkowski Byte Cipher: A Byte-Oriented Transposition with Rolling Key">
+  <meta name="citation_author" content="PVegananda">
+  <meta name="citation_publication_date" content="2026/10/27">
+  <meta name="citation_online_date" content="2026/10/27">
+  <meta name="citation_language" content="en">
+  <meta name="citation_abstract_html_url" content="https://myszkowski-byte-cipher.pages.dev/paper.html">
+  <meta name="DC.title" content="Myszkowski Byte Cipher: A Byte-Oriented Transposition with Rolling Key">
+  <meta name="DC.creator" content="PVegananda">
+  <meta name="DC.rights" content="MIT License">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Myszkowski Byte Cipher: A Byte-Oriented Transposition with Rolling Key">
+  <meta property="og:description" content="Research article and interactive laboratory for byte-oriented Myszkowski transposition.">
+  <meta property="og:url" content="https://myszkowski-byte-cipher.pages.dev/paper.html">
+  <meta name="twitter:card" content="summary">
+
+  <link rel="icon" href="assets/myszkowski-byte-cipher.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/paper.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ScholarlyArticle",
+    "headline": "Myszkowski Byte Cipher: A Byte-Oriented Transposition with Rolling Key",
+    "author": { "@type": "Person", "name": "PVegananda" },
+    "datePublished": "2026-10-27",
+    "inLanguage": ["en", "id"],
+    "license": "https://opensource.org/licenses/MIT",
+    "url": "https://myszkowski-byte-cipher.pages.dev/",
+    "codeRepository": "https://github.com/PVegananda/myszkowski-byte-cipher",
+    "keywords": "Myszkowski transposition, rolling key, byte cipher, cryptography education"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to content</a>
+  <div class="progress" id="progress" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="./" aria-label="Myszkowski Byte Cipher">
+        <img src="assets/myszkowski-byte-cipher.svg" alt="" width="26" height="26">
+        <span>Myszkowski<em>&nbsp;Byte Cipher</em></span>
+      </a>
+      <nav class="topnav" aria-label="Primary">
+        <a href="#abstract"><span lang="en">Abstract</span><span lang="id">Abstrak</span></a>
+        <a href="#method"><span lang="en">Method</span><span lang="id">Metode</span></a>
+        <a href="#experiments"><span lang="en">Experiments</span><span lang="id">Eksperimen</span></a>
+        <a href="./" class="topnav-app"><span lang="en">App</span><span lang="id">Aplikasi</span></a>
+        <a href="#references"><span lang="en">References</span><span lang="id">Referensi</span></a>
+      </nav>
+      <div class="language-switcher">
+        <label for="languageSelect" class="sr-only">Language</label>
+        <select id="languageSelect" aria-label="Language">
+          <option value="en">English</option>
+          <option value="id">Bahasa Indonesia</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ TITLE BLOCK ============ -->
+  <header class="masthead" id="top">
+    <div class="masthead-inner">
+      <p class="article-type"><span lang="en">Research Article &middot; Open Access &middot; Prototype</span><span lang="id">Artikel Penelitian &middot; Akses Terbuka &middot; Prototipe</span></p>
+      <h1>Myszkowski Byte Cipher:<br><span>A Byte-Oriented Transposition with Rolling Key</span></h1>
+      <p class="byline"><strong>PVegananda</strong></p>
+      <p class="affil"><span lang="en">Independent research &middot; Open-source project &middot; Updated 27 October 2026</span><span lang="id">Penelitian mandiri &middot; Proyek sumber terbuka &middot; Diperbarui 27 Oktober 2026</span></p>
+      <div class="masthead-actions">
+        <a class="btn btn-solid" href="./"><span lang="en">Open the application</span><span lang="id">Buka aplikasi</span></a>
+        <a class="btn btn-ghost" href="docs/TECHNICAL-DOCUMENTATION.md"><span lang="en">Technical documentation</span><span lang="id">Dokumentasi teknis</span></a>
+        <a class="btn btn-ghost" href="https://github.com/PVegananda/myszkowski-byte-cipher"><span lang="en">Source code</span><span lang="id">Kode sumber</span></a>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- ============ SIDEBAR ============ -->
+    <aside class="sidebar" aria-label="Article navigation">
+      <nav class="toc" aria-label="Table of contents">
+        <h2><span lang="en">Contents</span><span lang="id">Daftar Isi</span></h2>
+        <ol>
+          <li><a href="#abstract"><span lang="en">Abstract</span><span lang="id">Abstrak</span></a></li>
+          <li><a href="#introduction"><span lang="en">Introduction</span><span lang="id">Pendahuluan</span></a></li>
+          <li><a href="#method"><span lang="en">Method</span><span lang="id">Metode</span></a></li>
+          <li><a href="#implementation"><span lang="en">Implementation</span><span lang="id">Implementasi</span></a></li>
+          <li><a href="#experiments"><span lang="en">Experiments</span><span lang="id">Eksperimen</span></a></li>
+          <li><a href="#security"><span lang="en">Security analysis</span><span lang="id">Analisis keamanan</span></a></li>
+          <li><a href="#conclusion"><span lang="en">Conclusion</span><span lang="id">Kesimpulan</span></a></li>
+          <li><a href="#references"><span lang="en">References</span><span lang="id">Referensi</span></a></li>
+        </ol>
+      </nav>
+      <div class="sidebar-box">
+        <h2><span lang="en">Article info</span><span lang="id">Info artikel</span></h2>
+        <dl>
+          <dt><span lang="en">Type</span><span lang="id">Jenis</span></dt><dd><span lang="en">Research prototype</span><span lang="id">Prototipe riset</span></dd>
+          <dt><span lang="en">Runtime</span><span lang="id">Lingkungan</span></dt><dd>Web browser, Node.js 18+</dd>
+          <dt><span lang="en">Tests</span><span lang="id">Pengujian</span></dt><dd>12 <span lang="en">passing</span><span lang="id">lulus</span></dd>
+          <dt><span lang="en">License</span><span lang="id">Lisensi</span></dt><dd>MIT</dd>
+        </dl>
+      </div>
+      <div class="sidebar-box">
+        <h2><span lang="en">Cite this work</span><span lang="id">Kutip karya ini</span></h2>
+        <p class="cite-text">PVegananda (2026). <em>Myszkowski Byte Cipher: A Byte-Oriented Transposition with Rolling Key.</em> https://myszkowski-byte-cipher.pages.dev/</p>
+        <button type="button" id="copyCite" class="btn-small"><span lang="en">Copy BibTeX</span><span lang="id">Salin BibTeX</span></button>
+      </div>
+    </aside>
+
+    <!-- ============ ARTICLE ============ -->
+    <main id="content" class="paper">
+
+      <section id="abstract" class="abstract" aria-labelledby="h-abstract">
+        <h2 id="h-abstract"><span lang="en">Abstract</span><span lang="id">Abstrak</span></h2>
+        <p lang="en">This article presents Myszkowski Byte Cipher, a browser-based implementation that extends the classical Myszkowski transposition to arbitrary byte sequences. The method adds an optional rolling-key schedule that rotates the key once per block, and an optional reversible low-hex-nibble transform applied after transposition. Output is stored in a versioned 16-byte <code>.mysz</code> container carrying the mode, row count, original length and a CRC32 checksum. Because the implementation operates on raw bytes, it can process text, images, PDF and Office files without interpreting their format. All processing is local; no data is sent to a server. An interactive laboratory reproduces the timing and repeated-block measurements described below. The work is intended for education and reproducible experimentation and is <strong>not</strong> an authenticated encryption scheme.</p>
+        <p lang="id">Artikel ini memaparkan Myszkowski Byte Cipher, implementasi berbasis browser yang memperluas transposisi Myszkowski klasik ke deret byte sembarang. Metode ini menambahkan jadwal kunci berputar (<em>rolling key</em>) opsional yang memutar kunci pada setiap blok, serta transformasi low-hex-nibble opsional yang dapat dibalik setelah transposisi. Keluaran disimpan dalam kontainer <code>.mysz</code> berversi sepanjang 16 byte yang memuat mode, jumlah baris, panjang asli, dan checksum CRC32. Karena bekerja pada byte mentah, implementasi ini dapat memproses teks, gambar, PDF, dan file Office tanpa menafsirkan formatnya. Seluruh pemrosesan berlangsung lokal; tidak ada data dikirim ke server. Laboratorium interaktif mereproduksi pengukuran waktu dan uji blok berulang yang dijelaskan di bawah. Karya ini ditujukan untuk pendidikan dan eksperimen yang dapat direproduksi, dan <strong>bukan</strong> skema enkripsi terotentikasi.</p>
+        <p class="keywords"><strong><span lang="en">Keywords:</span><span lang="id">Kata kunci:</span></strong> Myszkowski transposition; rolling key; byte-oriented cipher; classical cryptography; cryptography education; reproducible experiments</p>
+      </section>
+
+      <div class="notice" role="note">
+        <strong><span lang="en">Important.</span><span lang="id">Penting.</span></strong>
+        <span lang="en">This is an educational transposition cipher. Do not use it to protect confidential data; use AES-GCM or ChaCha20-Poly1305 instead.</span>
+        <span lang="id">Ini adalah cipher transposisi untuk pembelajaran. Jangan gunakan untuk melindungi data rahasia; gunakan AES-GCM atau ChaCha20-Poly1305.</span>
+      </div>
+
+      <!-- 1 -->
+      <section id="introduction" aria-labelledby="h-intro">
+        <h2 id="h-intro"><span class="num">1</span><span lang="en">Introduction</span><span lang="id">Pendahuluan</span></h2>
+        <p lang="en">Classical transposition ciphers rearrange symbols without altering their values. They remain valuable teaching tools for permutation, repeated-key handling, block processing, and the distinction between reversible obfuscation and cryptographic confidentiality. The Myszkowski variant differs from simple columnar transposition by assigning equal ranks to repeated key characters and reading those columns together, row by row.</p>
+        <p lang="id">Cipher transposisi klasik menyusun ulang simbol tanpa mengubah nilainya. Cipher ini tetap berguna sebagai bahan ajar tentang permutasi, penanganan kunci berulang, pemrosesan blok, serta perbedaan antara pengaburan yang dapat dibalik dan kerahasiaan kriptografis. Varian Myszkowski berbeda dari transposisi kolom sederhana karena memberi peringkat sama pada karakter kunci yang berulang dan membaca kolom-kolom tersebut bersama, baris demi baris.</p>
+        <p lang="en">This project investigates three practical research questions:</p>
+        <p lang="id">Proyek ini menelaah tiga pertanyaan penelitian praktis:</p>
+        <ol class="rq">
+          <li><span lang="en"><strong>RQ1.</strong> Can Myszkowski transposition be applied safely to arbitrary bytes rather than only alphabetic text?</span><span lang="id"><strong>RQ1.</strong> Dapatkah transposisi Myszkowski diterapkan dengan aman pada byte sembarang, bukan hanya teks alfabet?</span></li>
+          <li><span lang="en"><strong>RQ2.</strong> Does rotating the key between blocks reduce identical ciphertext blocks in a repeated-data experiment?</span><span lang="id"><strong>RQ2.</strong> Apakah memutar kunci antarblok mengurangi blok ciphertext yang identik pada eksperimen data berulang?</span></li>
+          <li><span lang="en"><strong>RQ3.</strong> What is the effect of a reversible low-nibble offset applied after transposition?</span><span lang="id"><strong>RQ3.</strong> Apa pengaruh offset low-nibble yang dapat dibalik setelah transposisi?</span></li>
+        </ol>
+        <p lang="en">The classical transposition basis is taken from the publication cited in <a href="#references">[1]</a>. The rolling-key schedule, byte-oriented processing, nibble options, <code>.mysz</code> container, browser interface and validation strategy are extensions made in this project and are not attributed to that publication.</p>
+        <p lang="id">Dasar transposisi klasik diambil dari publikasi yang dirujuk pada <a href="#references">[1]</a>. Jadwal kunci berputar, pemrosesan berbasis byte, opsi nibble, kontainer <code>.mysz</code>, antarmuka browser, dan strategi validasi merupakan perluasan dalam proyek ini dan tidak dinisbatkan kepada publikasi tersebut.</p>
+      </section>
+
+      <!-- 2 -->
+      <section id="method" aria-labelledby="h-method">
+        <h2 id="h-method"><span class="num">2</span><span lang="en">Method</span><span lang="id">Metode</span></h2>
+
+        <h3><span class="num">2.1</span><span lang="en">Key ranking</span><span lang="id">Peringkat kunci</span></h3>
+        <p lang="en">Distinct key characters are sorted lexicographically and assigned ranks; repeated characters share a rank. Length is measured in Unicode code points, not UTF-16 code units. For the key <code>LAPTOP</code>:</p>
+        <p lang="id">Karakter kunci yang berbeda diurutkan secara leksikografis dan diberi peringkat; karakter berulang memiliki peringkat sama. Panjang diukur dalam titik kode Unicode, bukan unit kode UTF-16. Untuk kunci <code>LAPTOP</code>:</p>
+        <figure class="figure">
+          <table class="rank-table" aria-label="Key ranking example">
+            <tbody>
+              <tr><th scope="row">Key</th><td>L</td><td>A</td><td>P</td><td>T</td><td>O</td><td>P</td></tr>
+              <tr><th scope="row">Rank</th><td>2</td><td>1</td><td class="rep">4</td><td>5</td><td>3</td><td class="rep">4</td></tr>
+            </tbody>
+          </table>
+          <figcaption><strong>Figure 1.</strong> <span lang="en">Ranking of <code>LAPTOP</code>. The repeated letter P receives rank 4 in both positions (highlighted).</span><span lang="id">Peringkat <code>LAPTOP</code>. Huruf P yang berulang mendapat peringkat 4 pada kedua posisi (disorot).</span></figcaption>
+        </figure>
+
+        <h3><span class="num">2.2</span><span lang="en">Block layout and read order</span><span lang="id">Tata letak blok dan urutan baca</span></h3>
+        <p lang="en">For key length <var>c</var> and row count <var>r</var>, the block size is <var>B</var> = <var>c</var> &times; <var>r</var> bytes. The input is divided into blocks of <var>B</var> bytes; only the final block is zero-padded, and the original length stored in the header is used to remove padding. For each rank in ascending order, a unique column is read top-to-bottom, whereas columns sharing a rank are read left-to-right within each row. The resulting permutation is applied to every block independently.</p>
+        <p lang="id">Untuk panjang kunci <var>c</var> dan jumlah baris <var>r</var>, ukuran blok adalah <var>B</var> = <var>c</var> &times; <var>r</var> byte. Masukan dibagi menjadi blok <var>B</var> byte; hanya blok terakhir yang diberi padding nol, dan panjang asli pada header digunakan untuk membuang padding. Untuk setiap peringkat menaik, kolom unik dibaca atas ke bawah, sedangkan kolom yang berbagi peringkat dibaca kiri ke kanan pada tiap baris. Permutasi yang dihasilkan diterapkan pada setiap blok secara independen.</p>
+
+        <h3><span class="num">2.3</span><span lang="en">Rolling-key schedule</span><span lang="id">Jadwal kunci berputar</span></h3>
+        <p lang="en">In static mode every block uses the original key. In rolling mode, block <var>b</var> uses the key rotated left by <var>b</var> mod <var>c</var>. The schedule therefore repeats after <var>c</var> blocks; it alters block arrangement but does not provide the unpredictability of a cryptographic keystream.</p>
+        <p lang="id">Pada mode statis setiap blok memakai kunci asli. Pada mode berputar, blok <var>b</var> memakai kunci yang diputar ke kiri sebanyak <var>b</var> mod <var>c</var>. Jadwal ini berulang setiap <var>c</var> blok; ia mengubah susunan blok tetapi tidak memberi ketidakterdugaan seperti aliran kunci kriptografis.</p>
+        <figure class="figure">
+          <table class="rank-table" aria-label="Rolling schedule example">
+            <thead><tr><th scope="col">Block</th><th scope="col">Rotation</th><th scope="col" colspan="6">Key used</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">0</th><td>0</td><td>L</td><td>A</td><td>P</td><td>T</td><td>O</td><td>P</td></tr>
+              <tr><th scope="row">1</th><td>1</td><td>A</td><td>P</td><td>T</td><td>O</td><td>P</td><td>L</td></tr>
+              <tr><th scope="row">2</th><td>2</td><td>P</td><td>T</td><td>O</td><td>P</td><td>L</td><td>A</td></tr>
+            </tbody>
+          </table>
+          <figcaption><strong>Figure 2.</strong> <span lang="en">Rolling-key schedule for <code>LAPTOP</code> over the first three blocks.</span><span lang="id">Jadwal kunci berputar untuk <code>LAPTOP</code> pada tiga blok pertama.</span></figcaption>
+        </figure>
+
+        <h3><span class="num">2.4</span><span lang="en">Low-hex-nibble transform</span><span lang="id">Transformasi low-hex-nibble</span></h3>
+        <p lang="en">When enabled, the transform is applied after transposition to every byte, with offset <var>k</var> &isin; {9, 7}:</p>
+        <p lang="id">Jika diaktifkan, transformasi diterapkan setelah transposisi pada setiap byte, dengan offset <var>k</var> &isin; {9, 7}:</p>
+        <pre class="formula" aria-label="Nibble transform formula">output = (byte &amp; 0xF0) | (((byte &amp; 0x0F) + k) mod 16)</pre>
+        <p lang="en">Decryption applies the additive inverse modulo 16. The offset is recorded in the header, so it is a transform parameter and not secret key material.</p>
+        <p lang="id">Dekripsi memakai invers aditif modulo 16. Offset dicatat di header, sehingga ia adalah parameter transformasi, bukan materi kunci rahasia.</p>
+      </section>
+
+      <!-- 3 -->
+      <section id="implementation" aria-labelledby="h-impl">
+        <h2 id="h-impl"><span class="num">3</span><span lang="en">Implementation</span><span lang="id">Implementasi</span></h2>
+        <p lang="en">The system is framework-free and consists of static HTML, CSS and JavaScript modules. A versioned 16-byte header precedes the transformed payload; all multi-byte integers are big-endian.</p>
+        <p lang="id">Sistem ini tanpa framework dan terdiri dari modul HTML, CSS, dan JavaScript statis. Header berversi 16 byte mendahului payload yang ditransformasi; semua bilangan multibyte memakai big-endian.</p>
+        <figure class="figure">
+          <div class="table-wrap">
+          <table class="data-table">
+            <caption class="sr-only">.mysz header layout</caption>
+            <thead><tr><th>Bytes</th><th>Field</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>0&ndash;3</td><td>Magic</td><td>ASCII <code>MYSZ</code></td></tr>
+              <tr><td>4</td><td>Version</td><td><code>1</code> original, <code>2</code> nibble-aware</td></tr>
+              <tr><td>5</td><td>Flags</td><td>Bit 0 rolling key; bits 1&ndash;2 nibble offset</td></tr>
+              <tr><td>6&ndash;7</td><td>Rows</td><td>Unsigned 16-bit row count</td></tr>
+              <tr><td>8&ndash;11</td><td>Original length</td><td>Unsigned 32-bit byte length</td></tr>
+              <tr><td>12&ndash;15</td><td>CRC32</td><td>Checksum of the original data</td></tr>
+              <tr><td>16+</td><td>Payload</td><td>Padded and transformed bytes</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <figcaption><strong>Table 1.</strong> <span lang="en">Layout of the <code>.mysz</code> container.</span><span lang="id">Tata letak kontainer <code>.mysz</code>.</span></figcaption>
+        </figure>
+        <p lang="en">Before transformation, decryption validates the magic marker, version, flags, key, row count, payload length against block size, and original length against padding. After reversal, the CRC32 of the recovered data is compared with the header value. An automated suite of 12 regression tests covers key ordering, known vectors, round trips, wrong keys, invalid files, nibble offsets, strict hex input and repeated-block behaviour.</p>
+        <p lang="id">Sebelum transformasi, dekripsi memvalidasi penanda magic, versi, flag, kunci, jumlah baris, panjang payload terhadap ukuran blok, dan panjang asli terhadap padding. Setelah pembalikan, CRC32 data hasil pemulihan dibandingkan dengan nilai header. Rangkaian 12 uji regresi otomatis mencakup urutan kunci, vektor uji, round trip, kunci salah, file tidak valid, offset nibble, masukan hex ketat, dan perilaku blok berulang.</p>
+      </section>
+
+      <!-- 4 -->
+      <section id="experiments" aria-labelledby="h-exp">
+        <h2 id="h-exp"><span class="num">4</span><span lang="en">Experiments</span><span lang="id">Eksperimen</span></h2>
+        <p lang="en">The cipher is available as a standalone browser application that implements every step described above. Configure the key, row count, schedule and nibble offset, then encrypt text or files and run the timing and repeated-block measurements. To reproduce results for a paper, record the browser, operating system, hardware, key, row count, schedule, nibble offset, input size and the raw CSV output.</p>
+        <p lang="id">Cipher ini tersedia sebagai aplikasi browser mandiri yang menerapkan setiap langkah di atas. Atur kunci, jumlah baris, jadwal, dan offset nibble, lalu enkripsi teks atau file dan jalankan pengukuran waktu serta uji blok berulang. Untuk mereproduksi hasil pada makalah, catat browser, sistem operasi, perangkat keras, kunci, jumlah baris, jadwal, offset nibble, ukuran masukan, dan keluaran CSV mentah.</p>
+        <p><a class="btn btn-solid app-link" href="./"><span lang="en">Open the application &rarr;</span><span lang="id">Buka aplikasi &rarr;</span></a></p>
+
+        <h3><span class="num">4.1</span><span lang="en">Measurement protocol</span><span lang="id">Protokol pengukuran</span></h3>
+        <p lang="en"><strong>Timing benchmark.</strong> Input sizes of 10 KiB, 100 KiB, 512 KiB, 1 MiB and 5 MiB are filled with cryptographically random bytes. Each size is encrypted and decrypted five times; the mean and population standard deviation are reported in milliseconds.</p>
+        <p lang="id"><strong>Benchmark waktu.</strong> Ukuran masukan 10 KiB, 100 KiB, 512 KiB, 1 MiB, dan 5 MiB diisi byte acak kriptografis. Tiap ukuran dienkripsi dan didekripsi lima kali; rerata dan simpangan baku populasi dilaporkan dalam milidetik.</p>
+        <p lang="en"><strong>Repeated-block test.</strong> One random block is repeated 300 times and the number of distinct ciphertext blocks is counted. Static mode yields a single distinct block; rolling mode yields at most as many as the key length. This is evidence of changed block arrangement, not of semantic security.</p>
+        <p lang="id"><strong>Uji blok berulang.</strong> Satu blok acak diulang 300 kali dan jumlah blok ciphertext yang berbeda dihitung. Mode statis menghasilkan satu blok berbeda; mode berputar paling banyak sebanyak panjang kunci. Ini bukti perubahan susunan blok, bukan keamanan semantik.</p>
+      </section>
+
+      <!-- 5 -->
+      <section id="security" aria-labelledby="h-sec">
+        <h2 id="h-sec"><span class="num">5</span><span lang="en">Security analysis and limitations</span><span lang="id">Analisis keamanan dan keterbatasan</span></h2>
+        <p lang="en">Transposition preserves byte frequencies and file structure, so the scheme is vulnerable to frequency, structural, known-plaintext and chosen-plaintext analysis. The nibble transform is deterministic, reversible and independent of any secret, and therefore does not change this assessment. Claims are limited to reversible transformation, integrity-error detection and measured experimental behaviour.</p>
+        <p lang="id">Transposisi mempertahankan frekuensi byte dan struktur file, sehingga skema ini rentan terhadap analisis frekuensi, struktural, known-plaintext, dan chosen-plaintext. Transformasi nibble bersifat deterministik, dapat dibalik, dan tidak bergantung pada rahasia apa pun, sehingga tidak mengubah penilaian ini. Klaim dibatasi pada transformasi yang dapat dibalik, deteksi kesalahan integritas, dan perilaku eksperimen yang terukur.</p>
+        <figure class="figure">
+          <div class="table-wrap">
+          <table class="data-table">
+            <caption class="sr-only">Security gaps and mitigations</caption>
+            <thead><tr><th>Gap</th><th>Impact</th><th>Mitigation</th><th>Remaining limitation</th></tr></thead>
+            <tbody>
+              <tr><td>Transposition preserves structure</td><td><span class="tag high">High</span></td><td>Rolling schedule varies permutations</td><td>Still open to analysis</td></tr>
+              <tr><td>CRC32 is unauthenticated</td><td><span class="tag high">High</span></td><td>Mismatch is reported</td><td>Malicious edits can forge CRC</td></tr>
+              <tr><td>Header is visible</td><td><span class="tag mid">Medium</span></td><td>Strict header validation</td><td>Metadata remains exposed</td></tr>
+              <tr><td>Large block allocation</td><td><span class="tag mid">Medium</span></td><td>Block size capped at 16 MiB</td><td>Browser memory is finite</td></tr>
+              <tr><td>Unicode key normalization</td><td><span class="tag mid">Medium</span></td><td>Code-point iteration</td><td>Equivalent-looking keys may differ</td></tr>
+              <tr><td>32-bit length field</td><td><span class="tag low">Low</span></td><td>Explicit maximum check</td><td>Files above 4 GiB unsupported</td></tr>
+              <tr><td>External language lookup</td><td><span class="tag low">Low</span></td><td>Timeout and local fallback</td><td>Lookup service sees request metadata</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <figcaption><strong>Table 2.</strong> <span lang="en">Identified security gaps, current mitigations and residual limitations.</span><span lang="id">Celah keamanan yang teridentifikasi, mitigasi saat ini, dan keterbatasan yang tersisa.</span></figcaption>
+        </figure>
+        <p lang="en">For real confidentiality, the transformation should be replaced by a standard AEAD construction with keys derived through a password-based KDF such as Argon2id or scrypt.</p>
+        <p lang="id">Untuk kerahasiaan yang sesungguhnya, transformasi harus diganti dengan konstruksi AEAD standar dengan kunci yang diturunkan melalui KDF berbasis kata sandi seperti Argon2id atau scrypt.</p>
+      </section>
+
+      <!-- 6 -->
+      <section id="conclusion" aria-labelledby="h-concl">
+        <h2 id="h-concl"><span class="num">6</span><span lang="en">Conclusion and future work</span><span lang="id">Kesimpulan dan pekerjaan lanjutan</span></h2>
+        <p lang="en">Myszkowski Byte Cipher shows that Myszkowski transposition can be applied to arbitrary bytes with strict validation, and provides a transparent platform for observing how a rolling key changes block arrangement. It is a pedagogical artefact rather than a secure cipher. Planned work includes a clearly labelled authenticated-encryption mode, Web Crypto key derivation as a secure baseline, property-based tests for arbitrary block sizes and Unicode keys, a downloadable experiment manifest with environment metadata, automated accessibility checks, and a comparison of static, rolling, nibble-7 and nibble-9 variants against a baseline.</p>
+        <p lang="id">Myszkowski Byte Cipher menunjukkan bahwa transposisi Myszkowski dapat diterapkan pada byte sembarang dengan validasi ketat, serta menyediakan platform transparan untuk mengamati bagaimana kunci berputar mengubah susunan blok. Karya ini adalah artefak pedagogis, bukan cipher yang aman. Pekerjaan lanjutan mencakup mode enkripsi terotentikasi yang berlabel jelas, penurunan kunci dengan Web Crypto sebagai pembanding aman, uji berbasis properti untuk ukuran blok sembarang dan kunci Unicode, manifes eksperimen yang dapat diunduh beserta metadata lingkungan, pemeriksaan aksesibilitas otomatis, dan perbandingan varian statis, berputar, nibble-7, dan nibble-9 terhadap pembanding.</p>
+      </section>
+
+      <!-- References -->
+      <section id="references" aria-labelledby="h-ref">
+        <h2 id="h-ref"><span lang="en">References</span><span lang="id">Referensi</span></h2>
+        <ol class="refs">
+          <li id="ref1">JIKTEKS: Jurnal Ilmu Komputer dan Teknologi Informasi, Vol. 03, No. 03, August 2025, pp. 25&ndash;29. ISSN 2986-5417. <a href="https://doi.org/10.70404/jikteks.v3i03.322">doi:10.70404/jikteks.v3i03.322</a>. <a href="https://jurnal.faatuatua.com/index.php/JIKTEK">Journal website</a>.</li>
+          <li>PVegananda. <em>Myszkowski Byte Cipher &mdash; Technical Documentation and Research Notes.</em> 27 October 2026. <a href="docs/TECHNICAL-DOCUMENTATION.md">docs/TECHNICAL-DOCUMENTATION.md</a>.</li>
+          <li>PVegananda. <em>myszkowski-byte-cipher</em> (source code, MIT License). <a href="https://github.com/PVegananda/myszkowski-byte-cipher">github.com/PVegananda/myszkowski-byte-cipher</a>.</li>
+        </ol>
+      </section>
+    </main>
+  </div>
+
+  <div id="status" class="toast" role="status" aria-live="polite" aria-hidden="true"></div>
+  <footer class="site-footer">
+    <div>
+      <strong>Myszkowski Byte Cipher</strong> &middot; &copy; 2026 PVegananda &middot; MIT License
+    </div>
+    <div>
+      <a href="https://github.com/PVegananda/myszkowski-byte-cipher">Open-source repository</a> &middot;
+      <a href="docs/TECHNICAL-DOCUMENTATION.md">Technical documentation</a> &middot;
+      <span lang="en">Research prototype</span><span lang="id">Prototipe riset</span>
+    </div>
+  </footer>
+
+  <script src="js/paper.js"></script>
+</body>
+</html>

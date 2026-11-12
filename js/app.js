@@ -14,7 +14,11 @@
       nibbleLabel: "Low-hex-nibble offset", nibbleOff: "Disabled (classical bytes)", nibbleNine: "Add 9 modulo 16", nibbleSeven: "Add binary 0111 (7) modulo 16",
       textTitle: "Text encryption", textDescription: "Encrypt a message locally in your browser.", plainLabel: "Plaintext", encrypt: "Encrypt", decrypt: "Decrypt", cipherLabel: "Ciphertext (hex)", traceHint: "Non-printable bytes are shown as hexadecimal values. The first three blocks are displayed:",
       fileTitle: "File encryption", fileDescription: "Process files without uploading them to a server.", chooseFile: "Choose a file", fileHint: "PDF, Office files, images, or any binary file", noFile: "No file selected", encryptDownload: "Encrypt and download (.mysz)", decryptDownload: "Decrypt and download",
-      researchTitle: "Research measurements", researchDescription: "Collect repeatable timing and pattern observations.", runBenchmark: "Run timing benchmark", copyCsv: "Copy CSV", runPattern: "Run repeated-block test"
+      researchTitle: "Research measurements", researchDescription: "Collect repeatable timing and pattern observations.", runBenchmark: "Run timing benchmark", copyCsv: "Copy CSV", runPattern: "Run repeated-block test",
+      navDocs: "Documentation", notice: "Educational transposition cipher — not authenticated encryption. Do not use it to protect confidential data.",
+      pillLocal: "100% local", pillAnyFile: "Any file type", pillRolling: "Rolling key", pillCrc: "CRC32 verified",
+      readPaper: "Read the paper and documentation →", tabText: "Text", tabFile: "Files", tabResearch: "Research",
+      copyCipher: "Copy ciphertext", clear: "Clear", dropHint: "or drag and drop it here", browse: "Browse"
     },
     id: {
       eyebrow: "PROTOTIPE RISET", heroDescription: "Eksperimen transposisi berbasis byte dengan kunci berputar",
@@ -23,7 +27,11 @@
       nibbleLabel: "Offset nibble heksadesimal", nibbleOff: "Nonaktif (byte klasik)", nibbleNine: "Tambah 9 modulo 16", nibbleSeven: "Tambah biner 0111 (7) modulo 16",
       textTitle: "Enkripsi teks", textDescription: "Enkripsi pesan secara lokal di browser.", plainLabel: "Teks asli", encrypt: "Enkripsi", decrypt: "Dekripsi", cipherLabel: "Ciphertext (hex)", traceHint: "Byte yang tidak tercetak ditampilkan sebagai nilai heksadesimal. Tiga blok pertama ditampilkan:",
       fileTitle: "Enkripsi file", fileDescription: "Proses file tanpa mengunggahnya ke server.", chooseFile: "Pilih file", fileHint: "PDF, Office, gambar, atau file biner apa pun", noFile: "Belum ada file dipilih", encryptDownload: "Enkripsi dan unduh (.mysz)", decryptDownload: "Dekripsi dan unduh",
-      researchTitle: "Pengukuran riset", researchDescription: "Kumpulkan pengukuran waktu dan pola yang dapat diulang.", runBenchmark: "Jalankan benchmark waktu", copyCsv: "Salin CSV", runPattern: "Jalankan uji blok berulang"
+      researchTitle: "Pengukuran riset", researchDescription: "Kumpulkan pengukuran waktu dan pola yang dapat diulang.", runBenchmark: "Jalankan benchmark waktu", copyCsv: "Salin CSV", runPattern: "Jalankan uji blok berulang",
+      navDocs: "Dokumentasi", notice: "Cipher transposisi untuk pembelajaran — bukan enkripsi terotentikasi. Jangan gunakan untuk melindungi data rahasia.",
+      pillLocal: "100% lokal", pillAnyFile: "Semua jenis file", pillRolling: "Kunci berputar", pillCrc: "Terverifikasi CRC32",
+      readPaper: "Baca makalah dan dokumentasi →", tabText: "Teks", tabFile: "File", tabResearch: "Riset",
+      copyCipher: "Salin ciphertext", clear: "Bersihkan", dropHint: "atau seret dan lepas di sini", browse: "Telusuri"
     }
   };
   const translate = (next) => {
