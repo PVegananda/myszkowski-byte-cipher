@@ -1,6 +1,7 @@
 /* app.js - browser interface */
 (function () {
-  const { Cipher, Utils, Analysis } = MYSZ;
+  const { Cipher, Utils, Analysis, Format } = MYSZ;
+  const MAX_FILE_BYTES = 64 * 1024 * 1024; // keeps the single-threaded browser responsive
   const $ = (id) => document.getElementById(id);
   const te = new TextEncoder(), td = new TextDecoder();
   let lastBench = [];
@@ -18,7 +19,8 @@
       navDocs: "Documentation", notice: "Educational transposition cipher — not authenticated encryption. Do not use it to protect confidential data.",
       pillLocal: "100% local", pillAnyFile: "Any file type", pillRolling: "Rolling key", pillCrc: "CRC32 verified",
       readPaper: "Read the paper and documentation →", tabText: "Text", tabFile: "Files", tabResearch: "Research",
-      copyCipher: "Copy ciphertext", clear: "Clear", dropHint: "or drag and drop it here", browse: "Browse"
+      copyCipher: "Copy ciphertext", clear: "Clear", dropHint: "or drag and drop it here", browse: "Browse",
+      infoLine: "Columns = {c}, block size = {b} bytes, initial order: {o}"
     },
     id: {
       eyebrow: "PROTOTIPE RISET", heroDescription: "Eksperimen transposisi berbasis byte dengan kunci berputar",
@@ -31,7 +33,8 @@
       navDocs: "Dokumentasi", notice: "Cipher transposisi untuk pembelajaran — bukan enkripsi terotentikasi. Jangan gunakan untuk melindungi data rahasia.",
       pillLocal: "100% lokal", pillAnyFile: "Semua jenis file", pillRolling: "Kunci berputar", pillCrc: "Terverifikasi CRC32",
       readPaper: "Baca makalah dan dokumentasi →", tabText: "Teks", tabFile: "File", tabResearch: "Riset",
-      copyCipher: "Salin ciphertext", clear: "Bersihkan", dropHint: "atau seret dan lepas di sini", browse: "Telusuri"
+      copyCipher: "Salin ciphertext", clear: "Bersihkan", dropHint: "atau seret dan lepas di sini", browse: "Telusuri",
+      infoLine: "Kolom = {c}, ukuran blok = {b} byte, urutan awal: {o}"
     }
   };
   const translate = (next) => {
@@ -48,20 +51,13 @@
       } else node.textContent = value;
     });
     localStorage.setItem("mysz-language", language);
+    updateInfo();
   };
-  const detectLanguage = async () => {
+  const detectLanguage = () => {
+    // Browser language only: no network request, so nothing leaves the device.
     const saved = localStorage.getItem("mysz-language");
     if (saved && messages[saved]) return translate(saved);
-    const browserLanguage = (navigator.language || "").toLowerCase().startsWith("id") ? "id" : "en";
-    translate(browserLanguage);
-    try {
-      const response = await fetch("https://ipapi.co/json/", { signal: AbortSignal.timeout(1800) });
-      if (!response.ok) return;
-      const country = (await response.json()).country_code;
-      if (country === "ID") translate("id");
-    } catch (error) {
-      // IP detection is optional; the browser-language fallback is already active.
-    }
+    translate((navigator.language || "").toLowerCase().startsWith("id") ? "id" : "en");
   };
 
   const opts = () => ({ key: $("key").value, rows: parseInt($("rows").value, 10), rolling: $("mode").value === "rolling", hexOffset: parseInt($("hexOffset").value, 10) });
@@ -84,8 +80,25 @@
   function updateInfo() {
     try {
       const o = opts(), cols = [...o.key].length;
-      $("info").textContent = `Columns = ${cols}, block size = ${cols * o.rows} bytes, initial order: ${Cipher.computeOrder(o.key).join(" ")}`;
+      $("info").textContent = messages[language].infoLine
+        .replace("{c}", cols).replace("{b}", cols * o.rows).replace("{o}", Cipher.computeOrder(o.key).join(" "));
     } catch (e) { $("info").textContent = ""; }
+  }
+
+  // Decryption always follows the file header; mirror it in the controls so they never disagree.
+  function syncFromHeader(bytes) {
+    const h = Format.unpack(bytes);
+    $("rows").value = h.rows;
+    $("mode").value = h.rolling ? "rolling" : "static";
+    $("hexOffset").value = String(h.hexOffset);
+    updateInfo();
+  }
+
+  function requireFile() {
+    const f = $("fileIn").files[0];
+    if (!f) throw new Error("Choose a file first.");
+    if (f.size > MAX_FILE_BYTES) throw new Error(`File is too large (${Utils.formatSize(f.size)}). Limit: ${Utils.formatSize(MAX_FILE_BYTES)}.`);
+    return f;
   }
 
   function renderTrace(data, o) {
@@ -114,14 +127,15 @@
   });
 
   $("decText").onclick = guard(() => {
-    const out = Cipher.decrypt(Utils.fromHex($("cipher").value), opts());
+    const bytes = Utils.fromHex($("cipher").value);
+    syncFromHeader(bytes);
+    const out = Cipher.decrypt(bytes, opts());
     $("plain").value = td.decode(out, { fatal: true });
     status("Text decrypted successfully; CRC32 verified.");
   });
 
   $("encFile").onclick = guard(async () => {
-    const f = $("fileIn").files[0];
-    if (!f) throw new Error("Choose a file first.");
+    const f = requireFile();
     const o = opts(), data = new Uint8Array(await f.arrayBuffer());
     const t0 = performance.now(); const enc = Cipher.encrypt(data, o);
     const t1 = performance.now(); const back = Cipher.decrypt(enc, o);
@@ -135,9 +149,10 @@
   });
 
   $("decFile").onclick = guard(async () => {
-    const f = $("fileIn").files[0];
-    if (!f) throw new Error("Choose a .mysz file first.");
-    const out = Cipher.decrypt(new Uint8Array(await f.arrayBuffer()), opts());
+    const f = requireFile();
+    const bytes = new Uint8Array(await f.arrayBuffer());
+    syncFromHeader(bytes);
+    const out = Cipher.decrypt(bytes, opts());
     Utils.download(out, f.name.endsWith(".mysz") ? f.name.slice(0, -5) : f.name + ".dec");
     status("File decrypted; CRC32 verified. Original file downloaded.");
   });

@@ -7,7 +7,7 @@
   // Nomor urut abjad; huruf kembar mendapat nomor SAMA. LAPTOP -> [2,1,4,5,3,4]
   function computeOrder(key) {
     const chars = [...key];
-    const sorted = [...new Set(chars)].sort();
+    const sorted = [...new Set(chars)].sort((a, b) => a.codePointAt(0) - b.codePointAt(0)); // by code point
     return chars.map((c) => sorted.indexOf(c) + 1);
   }
 
@@ -108,9 +108,9 @@
       throw new Error("File length does not match its header.");
     const unshifted = shiftLowNibble(h.payload, (16 - hexOffset) % 16);
     const plain = transform(unshifted, key, h.rows, h.rolling, true);
-    if (h.length > plain.length) throw new Error("File rusak.");
+    if (h.length > plain.length) throw new Error("File is corrupted.");
     const result = plain.slice(0, h.length);
-    if (U.crc32(result) !== h.crc) throw new Error("Kunci salah atau file rusak (CRC32 tidak cocok).");
+    if (U.crc32(result) !== h.crc) throw new Error("Wrong key or corrupted file (CRC32 mismatch).");
     return result;
   }
 

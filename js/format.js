@@ -22,10 +22,10 @@
     },
     unpack(bytes) {
       if (bytes.length < HEADER_SIZE || MAGIC.some((b, i) => bytes[i] !== b))
-        throw new Error("Bukan file hasil enkripsi aplikasi ini (header tidak dikenali).");
-      if (bytes[4] !== 1 && bytes[4] !== 2) throw new Error("Versi format file tidak didukung.");
+        throw new Error("Not a file produced by this application (unrecognised header).");
+      if (bytes[4] !== 1 && bytes[4] !== 2) throw new Error("Unsupported file format version.");
       if ((bytes[5] & 0xf8) !== 0 || (bytes[5] & 6) === 6)
-        throw new Error("Flag header tidak valid.");
+        throw new Error("Invalid header flags.");
       if (bytes[4] === 1 && (bytes[5] & 6) !== 0)
         throw new Error("Legacy header contains unsupported flags.");
       const v = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);

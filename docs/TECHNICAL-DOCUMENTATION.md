@@ -109,12 +109,12 @@ website and consists of the following layers:
 | `js/format.js` | Versioned `.mysz` header packing and validation |
 | `js/cipher.js` | Key ordering, permutation construction, block transformation, nibble transform |
 | `js/analysis.js` | Timing benchmark, repeated-block experiment, and CSV export |
-| `js/app.js` | UI event handlers, localization, IP-based language hint, and error presentation |
+| `js/app.js` | UI event handlers, localization (browser language only), header-synchronised decryption, and error presentation |
 | `tests/test.js` | Regression, round-trip, validation, and experiment tests |
 
-All cryptographic transformation happens locally in the browser. The optional
-language-country lookup is separate from the cipher and does not receive
-plaintext, keys, or uploaded files.
+All processing happens locally in the browser. The application makes no network
+requests: language is chosen from the browser setting, fonts are system fonts,
+and `_headers` ships a Content Security Policy with `connect-src 'none'`.
 
 ## 5. Algorithm specification
 
@@ -286,7 +286,8 @@ key.
 | Header is visible | Medium | Header is validated strictly | Metadata remains exposed |
 | 32-bit length field | Low | Explicit maximum validation | Files above 4 GiB unsupported |
 | Large block allocation | Medium | Block size capped at 16 MiB | Browser memory remains finite |
-| External IP language lookup | Low | Timeout and local fallback | Country service sees request metadata |
+| Third-party requests | Low | No IP lookup or external fonts; CSP `connect-src 'none'` in `_headers` | None by design |
+| Large input files | Medium | 64 MiB UI limit with a clear error | Processing is still single-threaded |
 | Unicode key normalization | Medium | Code-point iteration | Visually equivalent keys may differ |
 
 For real confidentiality, replace the transformation with a standard AEAD

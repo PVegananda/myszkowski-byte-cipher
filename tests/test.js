@@ -49,7 +49,7 @@ test("kunci tidak valid ditolak", () => {
 });
 test("hex input rejects ambiguous characters", () => {
   assert.throws(() => U.fromHex("aa-ff"), /non-hexadecimal/);
-  assert.throws(() => U.fromHex("abc"), /genap/);
+  assert.throws(() => U.fromHex("abc"), /even/);
 });
 test("uji pola: kunci berputar > kunci tetap", () => {
   const r = MYSZ.Analysis.patternTest({ key: "LAPTOP", rows: 2 }, 60);

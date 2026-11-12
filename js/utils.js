@@ -25,7 +25,7 @@
       if (typeof str !== "string" || /[^0-9a-fA-F\s]/.test(str))
         throw new Error("Ciphertext contains a non-hexadecimal character.");
       const clean = str.replace(/\s/g, "");
-      if (clean.length % 2) throw new Error("Panjang hex harus genap.");
+      if (clean.length % 2) throw new Error("Hex length must be even.");
       const out = new Uint8Array(clean.length / 2);
       for (let i = 0; i < out.length; i++) out[i] = parseInt(clean.substr(i * 2, 2), 16);
       return out;
